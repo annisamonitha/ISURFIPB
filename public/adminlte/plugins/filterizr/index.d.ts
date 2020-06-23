@@ -1,3 +1,9 @@
-export declare type Filter = string | string[];
-export declare type FilterizrState = 'IDLE' | 'FILTERING' | 'SORTING' | 'SHUFFLING';
-export declare type Layout = 'horizontal' | 'vertical' | 'sameHeight' | 'sameWidth' | 'sameSize' | 'packed';
+/**
+ * Filterizr is a JavaScript library that sorts, shuffles and applies stunning
+ * filters over responsive galleries using CSS3 transitions and
+ * custom CSS effects.
+ * @author Yiotis Kaltsikis
+ * @see {@link http://yiotis.net/filterizr}
+ * @license MIT
+ */
+export { default } from './Filterizr';
