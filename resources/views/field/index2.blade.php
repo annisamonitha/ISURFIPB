@@ -31,7 +31,6 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Channel ID</th>
-                                <th>Action</th>
                             </tr>
                             @foreach($data_field as $field)
                             <tr>
@@ -91,7 +90,4 @@
         </div>
     </div>
 </div>
-
-
-
 @endsection

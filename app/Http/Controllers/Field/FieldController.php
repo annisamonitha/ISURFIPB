@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Field;
 
+use App\Exports\FieldExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Channel;
+use App\Models\Data as DataModel;
 use App\Models\Field as FieldModel;
 use App\Models\TokenModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FieldController extends Controller
 {
@@ -48,6 +51,29 @@ class FieldController extends Controller
         return redirect('/field')->with('sukses', 'Data berhasil disimpan');
     }
 
+    public function edit($id)
+    {
+        $field = FieldModel::find($id);
+        $data_channel = Channel::where('user_id', Session::get('user_id'))->get();
+
+        return view(
+            'field.edit',
+            [
+                'field' => $field,
+                'data_channel' => $data_channel
+            ]
+        );
+    }
+
+    public function update(Request $request, $id)
+    {
+        $field = FieldModel::find($id);
+
+        $field->update($request->all());
+
+        return redirect('/field')->with('sukses', 'Data berhasil diperbarui');
+    }
+
     public function delete($id)
     {
         $field = FieldModel::find($id);
@@ -56,9 +82,29 @@ class FieldController extends Controller
         return redirect('/field')->with('sukses', 'Data berhasil dihapus');
     }
 
+    public function show($id)
+    {
+        $data = DataModel::where('field_id', '=', $id)->get();
+
+        return view(
+            'data.show',
+            [
+                'data' => $data
+            ]
+        );
+    }
+
+
+
+
     public function field()
     {
         return response()->json(FieldModel::get(), 200);
+    }
+
+    public function export_excel()
+    {
+        return Excel::download(new FieldExport, 'siswa.xlsx');
     }
 
     public function fieldById($id)

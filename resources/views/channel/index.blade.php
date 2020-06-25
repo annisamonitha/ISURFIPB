@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-6">
@@ -13,10 +11,6 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <!-- <div class="card-header">
-                    <h3 class="card-title">DataTable with minimal features & hover style</h3>
-                </div> -->
-                <!-- /.card-header -->
                 <div class="card-body">
                     @if(session('sukses'))
                     <div class="alert alert-success" role="alert">

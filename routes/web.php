@@ -24,11 +24,14 @@ Route::get('/channel/{id}/detail', 'Channel\ChannelController@detail');
 
 Route::get('/field', 'Field\FieldController@index');
 Route::post('/field/create', 'Field\FieldController@create');
+Route::get('/field/{id}/edit', 'Field\FieldController@edit');
+Route::post('/field/{id}/update', 'Field\FieldController@update');
 Route::get('/field/{id}/delete', 'Field\FieldController@delete');
+Route::get('/field/{id}/show', 'Field\FieldController@show');
+// Route::get('/field/{id}/download', 'Field\FieldController@export_excel');
 
-Route::get('/data', function () {
-    return view(('channel.detail2'));
-});
+Route::get('/data', 'Data\DataController@index');
+Route::get('/field/{id}/download_data', 'Data\DataController@export_excel');
 
 Route::get('/tags', 'Tags\TagsController@index');
 Route::post('/tags/create', 'Tags\ChannelController@create');

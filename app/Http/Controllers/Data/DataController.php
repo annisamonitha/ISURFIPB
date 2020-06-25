@@ -2,15 +2,61 @@
 
 namespace App\Http\Controllers\Data;
 
+use App\Exports\DataExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Channel;
 use App\Models\Data as DataModel;
-use App\Models\Field;
+use App\Models\Field as FieldModel;
 use App\Models\TokenModel;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\VarDumper\Cloner\Data;
 
 class DataController extends Controller
 {
+    public function index()
+    {
+        if (!Session::get('login')) {
+            return redirect('login')->with('alert', 'Kamu harus login dulu');
+        } else {
+            $data_field = new Collection();
+            $data_channel = Channel::where('user_id', Session::get('user_id'))->get();
+
+            foreach ($data_channel as $channel) {
+                $data_field = $data_field->merge(FieldModel::where('channel_id', $channel->id)->get());
+            }
+
+            $count_field = $data_field->count();
+
+            return view(
+                'data.index',
+                [
+                    'data_field' => $data_field,
+                    'count_field' => $count_field,
+                    'data_channel' => $data_channel
+                ]
+            );
+        }
+    }
+
+    public function export_excel($id)
+    {
+        // $data_field = new Collection();
+
+        // $data = DataModel::where('field_id', $id)->get();
+
+        // return Excel::download($data, 'Data_Field' . $id . '.xlsx');
+        // return Excel::download(new DataExport, 'Data_Field' . $id . '.xlsx');
+
+        // return $data;
+        // return dd((new DataExport));
+
+        // return Excel::download(new DataExport($id), 'Data_Field_' . $id . '.xlsx');
+        return Excel::download(new DataExport, 'Data_Field_' . $id . '.xlsx');
+    }
+
     public function data()
     {
         return response()->json(DataModel::get(), 200);
@@ -28,6 +74,7 @@ class DataController extends Controller
     public function dataSave(Request $request)
     {
         $tokenStatus = $this->checkToken($request, $request->field_id);
+        // return $tokenStatus;
         if ($tokenStatus) {
             $data = DataModel::create($request->all());
             return response()->json($data, 201);
@@ -66,20 +113,19 @@ class DataController extends Controller
 
     public function checkToken($request, $id)
     {
-        $dataModel = DataModel::where('field_id', '=', $id)->first();
-        if ($dataModel != null) {
-            $fieldModel = Field::find($dataModel->channel_id);
-            if ($fieldModel != null) {
-                $tokenModel = TokenModel::where('channel_id', '=', $fieldModel->channel_id)->first();
-                if ($tokenModel != null) {
-                    $token = $request->header('Authorization');
-                    $token_db = "Bearer " . $tokenModel->token;
+        // $dataModel = DataModel::where('field_id', '=', $id)->first();
+        // if ($dataModel != null) {
 
-                    if ($token == $token_db) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+        $fieldModel = FieldModel::find($id);
+        if ($fieldModel != null) {
+            // return $fieldModel;
+            $tokenModel = TokenModel::where('channel_id', '=', $fieldModel->channel_id)->first();
+            if ($tokenModel != null) {
+                $token = $request->header('Authorization');
+                $token_db = "Bearer " . $tokenModel->token;
+
+                if ($token == $token_db) {
+                    return true;
                 } else {
                     return false;
                 }
@@ -89,6 +135,38 @@ class DataController extends Controller
         } else {
             return false;
         }
+
+
+        // } else {
+        //     return false;
+        // }
+
+
+        // $dataModel = DataModel::where('field_id', '=', $id)->first();
+        // if ($dataModel != null) {
+        //     $fieldModel = Field::find($dataModel->channel_id);
+        //     if ($fieldModel != null) {
+        //         $tokenModel = TokenModel::where('channel_id', '=', $fieldModel->channel_id)->first();
+        //         if ($tokenModel != null) {
+        //             $token = $request->header('Authorization');
+        //             $token_db = "Bearer " . $tokenModel->token;
+
+        //             if ($token == $token_db) {
+        //                 return true;
+        //             } else {
+        //                 return false;
+        //             }
+        //         } else {
+        //             return false;
+        //         }
+        //     } else {
+        //         return false;
+        //     }
+        // } else {
+        //     return false;
+        // }
+
+
         // $tokenModel = TokenModel::where('channel_id', '=', $id)->first();
         // if ($tokenModel != null) {
         //     $token = $request->header('Authorization');

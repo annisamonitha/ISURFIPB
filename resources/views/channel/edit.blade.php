@@ -57,7 +57,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputEmail1">User ID</label>
-                                <input name="user_id" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="User ID" value="{{$channel->user_id}}">
+                                <input readonly name="user_id" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="User ID" value="{{$channel->user_id}}">
                             </div>
                         </div>
                         <!-- /.card-body -->
