@@ -15,6 +15,7 @@
             </div>
         </div>
     </div><!-- /.container-fluid -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </section>
 <section class="content">
     <div class="container-fluid">
@@ -70,35 +71,26 @@
                 <!-- /.card -->
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <!-- AREA CHART -->
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Area Chart</h3>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart">
-                            <canvas id="areaChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-
+        <div class="card" style="padding:30px;">
+            <div class="form-group" style ="width:300px;margin:auto;">
+                <label for="_display">Chart Display</label>
+                <select class="form-control"  id="_display" onchange="reDraw(this)">
+                    <option value="1">1 Jam</option>
+                    <option value="2">1 Hari</option>
+                    <option value="3">1 Minggu</option>
+                    <option value="4">2 Minggu</option>
+                    <option value="5">1 Bulan</option>
+                    <option value="6">3 Bulan</option>
+                </select>
             </div>
-            <!-- /.col (LEFT) -->
+        </div>
+        <div class="row">
+            @foreach($field as $f)             
             <div class="col-md-12">
                 <!-- LINE CHART -->
                 <div class="card card-info">
                     <div class="card-header">
-                        <h3 class="card-title">Line Chart</h3>
+                        <h3 class="card-title">{{$f->name}}</h3>
 
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -107,20 +99,19 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <p id="time_{{$f->id}}"></p>
                         <div class="chart">
-                            <canvas id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                            <canvas id="line_{{$f->id}}" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;overflow-y:auto"></canvas>
                         </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
-
-
-
             </div>
+            @endforeach
             <!-- /.col (RIGHT) -->
         </div>
     </div>
+    <input type="hidden" id="_field" value = '<?= json_encode($field) ?>'>
 </section>
 @endsection
 
@@ -134,53 +125,105 @@
 <script src="/adminlte/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/adminlte/js/demo.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
 <!-- page script -->
 <script>
-    $(function() {
-        /* ChartJS
-         * -------
-         * Here we will create a few charts using ChartJS
-         */
 
-        //--------------
-        //- AREA CHART -
-        //--------------
+    var field;
+    var mode = 1;
 
-        // Get context with jQuery - using jQuery's .get() method.
-        var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
+    function reDraw(data) {
+        mode = data.value;
+        getData();
+    }
 
-        var areaChartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    function getData() {
+
+        for(var w = 0 ; w < field.length; w ++) {    
+            $.ajax({
+                type: "POST",
+                url: '<?= url('/channel/data') ?>', // This is what I have updated
+                data: { id: field[w].id, mode : mode}
+            }).done(function( data ) {
+                console.log(data);
+                makeChart(data);
+            });
+        }
+    }
+    function randomColorFactor() {
+        return Math.round(Math.random() * 255);
+    }
+    function randomColor(opacity) {
+        return (
+            "rgba(" +
+            randomColorFactor() +
+            "," +
+            randomColorFactor() +
+            "," +
+            randomColorFactor() +
+            "," +
+            (opacity || ".3") +
+            ")"
+        );
+    }
+    function makeChart(data) {
+        var time = '';
+        var labels = [];
+        var datasets = [];
+        var date = '';
+        var id=0;
+        for(var w = 0 ; w < data.length ; w ++) {
+            var mmnt = moment(data[w].date + ' ' + data[w].time);
+            datasets.push(data[w].nilai);
+            labels.push(mmnt.format('D-MM-YY h:mm'));
+            date = data[w].date;
+            time = data[w].time;
+            id = data[w].field_id;
+        }
+        var chart_data = {
+            labels:labels,
             datasets: [{
-                    label: 'Digital Goods',
+                    label: date,
                     backgroundColor: 'rgba(60,141,188,0.9)',
                     borderColor: 'rgba(60,141,188,0.8)',
-                    pointRadius: false,
-                    pointColor: '#3b8bba',
-                    pointStrokeColor: 'rgba(60,141,188,1)',
-                    pointHighlightFill: '#fff',
-                    pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                },
-                {
-                    label: 'Electronics',
-                    backgroundColor: 'rgba(210, 214, 222, 1)',
-                    borderColor: 'rgba(210, 214, 222, 1)',
-                    pointRadius: false,
-                    pointColor: 'rgba(210, 214, 222, 1)',
-                    pointStrokeColor: '#c1c7d1',
-                    pointHighlightFill: '#fff',
-                    pointHighlightStroke: 'rgba(220,220,220,1)',
-                    data: [65, 59, 80, 81, 56, 55, 40]
+                    pointRadius: true,
+                    pointColor: randomColor(0.7),
+                    pointStrokeColor: randomColor(0.5),
+                    pointHighlightFill: randomColor(0.2),
+                    pointHighlightStroke: randomColor(0.6),
+                    pointBorderWidth: 2,
+                    data: datasets
                 },
             ]
         }
-
-        var areaChartOptions = {
+        var chart_options = {
+            animation: {
+                duration: 0
+            },
             maintainAspectRatio: false,
             responsive: true,
             legend: {
                 display: false
+            },
+            pan: {
+                // Boolean to enable panning
+                enabled: true,
+
+                // Panning directions. Remove the appropriate direction to disable 
+                // Eg. 'y' would only allow panning in the y direction
+                mode: 'y',
+
+                speed: 1
+            },
+
+            // Container for zoom options
+            zoom: {
+                // Boolean to enable zooming
+                enabled: true,                      
+                // Zooming directions. Remove the appropriate direction to disable 
+                // Eg. 'y' would only allow zooming in the y direction
+                mode: 'y',
             },
             scales: {
                 xAxes: [{
@@ -195,22 +238,11 @@
                 }]
             }
         }
-
-        // This will get the first returned node in the jQuery collection.
-        var areaChart = new Chart(areaChartCanvas, {
-            type: 'line',
-            data: areaChartData,
-            options: areaChartOptions
-        })
-
-        //-------------
-        //- LINE CHART -
-        //--------------
-        var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
-        var lineChartOptions = jQuery.extend(true, {}, areaChartOptions)
-        var lineChartData = jQuery.extend(true, {}, areaChartData)
+        document.getElementById('time_'+id).innerHTML = 'Last Update ' + date + ' ' + time;
+        var lineChartCanvas = $('#line_'+id).get(0).getContext('2d')
+        var lineChartOptions = jQuery.extend(true, {}, chart_options)
+        var lineChartData = jQuery.extend(true, {}, chart_data)
         lineChartData.datasets[0].fill = false;
-        lineChartData.datasets[1].fill = false;
         lineChartOptions.datasetFill = false
 
         var lineChart = new Chart(lineChartCanvas, {
@@ -218,8 +250,19 @@
             data: lineChartData,
             options: lineChartOptions
         })
+    }
 
-
+    $(function() {
+        field = JSON.parse(document.getElementById('_field').value);
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        getData();
+        setInterval(() => {
+            getData();
+        }, 10 * 1000);
     })
 </script>
 </body>

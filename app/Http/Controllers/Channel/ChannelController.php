@@ -1,17 +1,19 @@
 <?php
 
 namespace App\Http\Controllers\Channel;
+date_default_timezone_set('Asia/Jakarta');
+use App\Models\Data;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 use App\Models\Channel as ChannelModel;
-use App\Models\Field as FieldModel;
 use App\Models\TokenModel;
+use App\Models\Field;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\CssSelector\Parser\Token;
+use Illuminate\Support\Facades\DB;
+use DateTime;
 
 class ChannelController extends Controller
 {
@@ -28,7 +30,7 @@ class ChannelController extends Controller
                 'channel.index',
                 [
                     'data_channel' => $data_channel,
-                    'count_channel' => $count_channel
+                    'count_channel' => $count_channel,
                 ]
             );
         }
@@ -47,7 +49,7 @@ class ChannelController extends Controller
         return view(
             'channel.edit',
             [
-                'channel' => $channel
+                'channel' => $channel,
             ]
         );
     }
@@ -55,8 +57,6 @@ class ChannelController extends Controller
     public function update(Request $request, $id)
     {
         $channel = ChannelModel::find($id);
-
-        // return dd($request->all());
 
         $channel->update($request->all());
 
@@ -71,19 +71,56 @@ class ChannelController extends Controller
         return redirect('/channel')->with('sukses', 'Data berhasil dihapus');
     }
 
+    public function data(Request $request)
+    { 
+        $dt = new DateTime();
+        switch($request->mode) {
+            case 1:
+                $dt->modify('-1 hour');
+            break;
+            case 2:
+                $dt->modify('-1 day');
+            break;
+            case 3:
+                $dt->modify('-1 week');
+            break;
+            case 4:
+                $dt->modify('-2 week');
+            break;
+            case 5:
+                $dt->modify('-1 month');
+            break;
+            case 6:
+                $dt->modify('-3 month');
+            break;
+            default:
+                $dt->modify('-1 hour');
+            break;
+        }
+        $data = [];
+        foreach( Data::select(DB::raw('*, cast(concat(date, " ", time) as datetime) as `dtime`'))
+        ->where('field_id', '=', $request->id)
+        ->having('dtime', '>=', $dt->format('Y-m-d H:i:s'))
+        ->having('dtime', '<=', date('Y-m-d H:i:s'))->orderBy('dtime', 'ASC')->get() as $d) {
+            $data[] = $d;
+        }
+        return $data;
+    }
+
     public function detail($id)
     {
         $channel = ChannelModel::find($id);
         $token = TokenModel::where('channel_id', '=', $id)->first();
+        $field = Field::where('channel_id', '=', $id)->get();
 
         return view(
             'channel.detail',
             [
                 'channel' => $channel,
-                'token' => $token
+                'token' => $token,
+                'field' => $field,
             ]
         );
-
 
         // return view(
         //     'channel.edit',

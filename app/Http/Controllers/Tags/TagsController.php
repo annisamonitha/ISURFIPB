@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Tags;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\TagModel;
+use App\Models\Tag as TagModel;
 
 class TagsController extends Controller
 {

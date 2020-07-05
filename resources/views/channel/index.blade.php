@@ -27,7 +27,10 @@
                                 Tambah Channel
                             </button>
                         </div>
-                        <table class="table table-hover">
+                    </div>
+                    <hr>
+                    <table id="table_0" class="table table-bordered table-striped table-hover" style="margin-top:20px;">
+                        <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
@@ -37,6 +40,8 @@
                                 <th>Description</th>
                                 <th>Action</th>
                             </tr>
+                        </thead>
+                        <tbody>
                             @foreach($data_channel as $channel)
                             <tr>
                                 <td>{{$channel->id}}</td>
@@ -48,11 +53,12 @@
                                 <td>
                                     <a href="/channel/{{$channel->id}}/detail" class="btn btn-success btn-sm"><i class="fas fa-info-circle"></i></a>
                                     <a href="/channel/{{$channel->id}}/edit" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                    <a href="/channel/{{$channel->id}}/delete" class="btn btn-danger btn-sm" onclick="return confirm('Yakin dihapus?')"><i class="fas fa-trash"></i></a></td>
+                                    <a href="/channel/{{$channel->id}}/delete" class="btn btn-danger btn-sm" onclick="return confirm('Yakin dihapus?')"><i class="fas fa-trash"></i></a>
+                                </td>
                             </tr>
                             @endforeach
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Modal -->
@@ -105,4 +111,18 @@
         </div>
     </div>
 </div>
+
+<link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            console.log('oke');
+            $.noConflict();
+            $(".dataTables_wrapper").css("width","100%");
+            $("#table_0").DataTable({
+            });
+            
+        });
+    </script>
 @endsection

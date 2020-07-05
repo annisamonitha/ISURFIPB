@@ -37,8 +37,14 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Nama Field</label>
-                                <input name="name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nama Field" value="{{$field->name}}">
+                                <input name="name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nama Field" value="{{$field->name}}" required>
                             </div>
+                            <!-- HAPUS START -->
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Sensor</label>
+                                <input name="sensor" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Sensor Field" value="{{$field->sensor}}" required>
+                            </div>
+                            <!-- HAPUS END -->
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Channel Name</label>
                                 <!-- <input name="channel_id" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Device Type" value="{{$field->channel_id}}"> -->
@@ -49,8 +55,6 @@
                                         @endif
                                         value="{{$channel->id}}">{{$channel->name}}</option>
                                     @endforeach
-
-
                                 </select>
                             </div>
                         </div>

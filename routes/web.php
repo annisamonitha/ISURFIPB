@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/seed', 'SeedController@seed');
+Route::get('/test', 'SeedController@test');
+Route::post('/channel/data', 'Channel\ChannelController@data');
+
 Route::get('/channel', 'Channel\ChannelController@index');
 Route::post('/channel/create', 'Channel\ChannelController@create');
 Route::get('/channel/{id}/edit', 'Channel\ChannelController@edit');
@@ -32,6 +36,7 @@ Route::get('/field/{id}/show', 'Field\FieldController@show');
 
 Route::get('/data', 'Data\DataController@index');
 Route::get('/field/{id}/download_data', 'Data\DataController@export_excel');
+Route::get('/data/download_excel', 'Data\DataController@download_excel')->name('data.download_excel');
 
 Route::get('/tags', 'Tags\TagsController@index');
 Route::post('/tags/create', 'Tags\ChannelController@create');
@@ -42,6 +47,7 @@ Route::get('/tags/{id}/delete', 'Tags\ChannelController@delete');
 Route::get('/generate/{id}', 'Token\TokenController@generate');
 
 // Route::get('/home_user', 'User@index');
+Route::get('/', 'User@index');
 Route::get('/dashboard', 'User@index');
 Route::get('/login', 'User@login');
 Route::post('/loginPost', 'User@loginPost');

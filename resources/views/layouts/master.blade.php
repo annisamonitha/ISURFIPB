@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 3 | Blank Page</title>
+    <title>ISURF IPB University</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -33,9 +33,7 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="/dashboard" class="nav-link">Home</a>
                 </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
-                </li>
+                
             </ul>
             </form>
         </nav>
@@ -46,7 +44,7 @@
             <!-- Brand Logo -->
             <a href="/dashboard" class="brand-link">
                 <img src="/adminlte/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">AdminLTE 3</span>
+                <span class="brand-text font-weight-light">ISURF</span>
             </a>
 
             <!-- Sidebar -->
@@ -82,7 +80,7 @@
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                     <!--   <li class="nav-item">
                             <a href="/data" class="nav-link">
                                 <i class="nav-icon fas fa-database"></i>
                                 <p>
@@ -97,7 +95,7 @@
                                     Tags
                                 </p>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a href="/logout" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -121,10 +119,9 @@
 
         <footer class="main-footer">
             <div class="float-right d-none d-sm-block">
-                <b>Version</b> 3.0.5
+               <!-- <b>Version</b> 3.0.5 -->
             </div>
-            <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
-            reserved.
+            <strong>Copyright &copy; <a href="https://cs.ipb.ac.id/">ISURF</a>,</strong> IPB University
         </footer>
 
         <!-- Control Sidebar -->

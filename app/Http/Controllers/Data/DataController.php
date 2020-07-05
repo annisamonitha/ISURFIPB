@@ -43,18 +43,12 @@ class DataController extends Controller
 
     public function export_excel($id)
     {
-        // $data_field = new Collection();
+        return Excel::download(new DataExport($id), 'Data_Field_' . $id . '.xlsx');
+    }
 
-        // $data = DataModel::where('field_id', $id)->get();
-
-        // return Excel::download($data, 'Data_Field' . $id . '.xlsx');
-        // return Excel::download(new DataExport, 'Data_Field' . $id . '.xlsx');
-
-        // return $data;
-        // return dd((new DataExport));
-
-        // return Excel::download(new DataExport($id), 'Data_Field_' . $id . '.xlsx');
-        return Excel::download(new DataExport, 'Data_Field_' . $id . '.xlsx');
+    public function download_excel(Request $request)
+    {
+        return Excel::download(new DataExport($request->field_id, $request->mode), 'Data_Field_' . $request->field_id . '.xlsx');
     }
 
     public function data()

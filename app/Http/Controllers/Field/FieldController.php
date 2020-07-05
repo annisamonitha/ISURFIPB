@@ -27,9 +27,7 @@ class FieldController extends Controller
             foreach ($data_channel as $channel) {
                 $data_field = $data_field->merge(FieldModel::where('channel_id', $channel->id)->get());
             }
-
-
-
+            
             $channel = Channel::where('user_id', Session::get('user_id'))->first();
             // $data_field = FieldModel::where('channel_id', $channel->id)->get();
             $count_field = $data_field->count();
@@ -84,7 +82,7 @@ class FieldController extends Controller
 
     public function show($id)
     {
-        $data = DataModel::where('field_id', '=', $id)->get();
+        $data = FieldModel::find($id);
 
         return view(
             'data.show',
@@ -93,9 +91,6 @@ class FieldController extends Controller
             ]
         );
     }
-
-
-
 
     public function field()
     {

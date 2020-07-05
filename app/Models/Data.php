@@ -8,7 +8,8 @@ class Data extends Model
 {
     protected  $table = "data";
     public $timestamp = false;
-
+    public $dts;
+    
     protected $fillable = [
         'nilai',
         'date',
