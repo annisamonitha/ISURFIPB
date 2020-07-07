@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Exports;
+date_default_timezone_set('Asia/Jakarta');
 
 use App\Models\Data as DataModel;
 use DateTime;
@@ -52,8 +53,9 @@ class DataExport implements FromCollection
                 ->where('field_id', '=', $this->field_id)
                 ->having('dtime', '>=', $dt->format('Y-m-d H:i:s'))
                 ->having('dtime', '<=', date('Y-m-d H:i:s'))->orderBy('dtime', 'ASC')->get();
+        }else{ return DataModel::select(DB::raw('*, cast(concat(date, " ", time) as datetime) as `dtime`'))
+            ->where('field_id', '=', $this->field_id)
+            ->having('dtime', '<=', date('Y-m-d H:i:s'))->orderBy('dtime', 'ASC')->get();
         }
-        // return DataModel::all();
-        return DataModel::where('field_id', $this->field_id)->get();
     }
 }
